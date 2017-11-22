@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  linux:
+    image: nozaq/amazon-linux-ec2
+    volumes:
+      - "./:/opt/cis"
+    working_dir: "/opt/cis"
+    cap_add:
+        - NET_ADMIN
+    command: ["python", "/opt/cis", "--time", "pool.ntp.org", "--clients", "192.168.0.0/255.255.0.0"]
