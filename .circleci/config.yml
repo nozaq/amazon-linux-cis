@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  build:
+    machine:
+      image: circleci/classic:edge
+
+    working_directory: ~/cis
+
+    steps:
+      - checkout
+      - run:
+          name: run tests
+          pwd: ~/cis
+          command: docker-compose run linux
+

@@ -8,4 +8,4 @@ services:
     working_dir: "/opt/cis"
     cap_add:
         - NET_ADMIN
-    command: ["python", "/opt/cis", "--time", "pool.ntp.org", "--clients", "192.168.0.0/255.255.0.0"]
+    command: ["python", "/opt/cis", "--verbose", "--time", "pool.ntp.org", "--clients", "192.168.0.0/255.255.0.0"]
