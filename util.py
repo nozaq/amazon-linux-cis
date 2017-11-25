@@ -21,7 +21,7 @@ def ensure_backed_up(path):
     if path not in __file_history__ and os.path.isfile(path):
         backup_path = '{}.bak'.format(path)
         logging.info('Backing up %s into %s...', path, backup_path)
-        exec_shell('cp {} {}.bak'.format(path, backup_path))
+        exec_shell('cp {} {}'.format(path, backup_path))
         __file_history__[path] = True
 
 
