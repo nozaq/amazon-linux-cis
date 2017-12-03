@@ -147,9 +147,18 @@ def disable_inetd_services():
         Service(srv).disable()
 
 
-def configure_ntpd(upstream):
+def configure_time_synchronization(upstream, chrony=True):
+    """2.2.1 Time Synchronization"""
+    if chrony:
+        configure_chrony(upstream)
+    else:
+        configure_ntp(upstream)
+
+
+def configure_ntp(upstream):
     """2.2.1 Time Synchronization"""
     # 2.2.1.1 Ensure time synchronization is in use
+    Package('chrony').remove()
     Package('ntp').install()
 
     # 2.2.1.2 Ensure ntp is configured
@@ -162,6 +171,23 @@ def configure_ntpd(upstream):
 
     PropertyFile('/etc/sysconfig/ntpd', '=').override({
         'OPTIONS': '"-u ntp:ntp"'
+    }).write()
+
+
+def configure_chrony(upstream):
+    """2.2.1 Time Synchronization"""
+
+    # 2.2.1.1 Ensure time synchronization is in use
+    Package('ntp').remove()
+    Package('chrony').install()
+
+    # 2.2.1.3 Ensure chrony is configured
+    PropertyFile('/etc/chrony.conf', ' ').override({
+        'server': upstream
+    }).write()
+
+    PropertyFile('/etc/sysconfig/chronyd', '=').override({
+        'OPTIONS': '"-u chrony"'
     }).write()
 
 
@@ -481,7 +507,9 @@ def main():
         description='A script to harden Amazon Linux instance.')
     parser.add_argument('--time', required=True, metavar='<time server>',
                         help='Specify the upstream time server.')
-    parser.add_argument('--clients', required=True, metavar='<allowed clients>',
+    parser.add_argument('--chrony', action='store', type=bool, default=True,
+                        help='Use chrony for time synchronization')
+    parser.add_argument('--clients', metavar='<allowed clients>',
                         help='Specify a comma separated list of hostnames and host IP addresses.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Display details including debugging output etc.')
@@ -495,6 +523,12 @@ def main():
 
     logging.info(
         '[Config] Upstream time server is set as "%s"', args.time)
+    if args.chrony:
+        logging.info(
+            '[Config] chrony will be used for time synchronization')
+    else:
+        logging.info(
+            '[Config] ntp will be used for time synchronization')
     logging.info('[Config] Allowed clients are set as %s',
                  args.clients.split(','))
 
@@ -511,7 +545,7 @@ def main():
 
     # 2 Services
     disable_inetd_services()
-    configure_ntpd(args.time)
+    configure_time_synchronization(args.time, chrony=args.chrony)
     remove_x11_packages()
     disable_special_services()
     configure_mta()
