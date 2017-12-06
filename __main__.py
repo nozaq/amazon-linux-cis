@@ -7,7 +7,7 @@ import re
 from subprocess import CalledProcessError
 import pkg_resources
 
-from util import exec_shell, File, Package, Service, PropertyFile
+from util import exec_shell, set_backup_enabled, File, Package, Service, PropertyFile
 
 
 def get_string_asset(path):
@@ -509,6 +509,8 @@ def main():
                         help='Specify the upstream time server.')
     parser.add_argument('--chrony', action='store', type=bool, default=True,
                         help='Use chrony for time synchronization')
+    parser.add_argument('--no-backup', action='store_true',
+                        help='Use chrony for time synchronization')
     parser.add_argument('--clients', metavar='<allowed clients>',
                         help='Specify a comma separated list of hostnames and host IP addresses.')
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -531,6 +533,12 @@ def main():
             '[Config] ntp will be used for time synchronization')
     logging.info('[Config] Allowed clients are set as %s',
                  args.clients.split(','))
+
+    if args.no_backup:
+        logging.info('[Config] Automatic config backup is disabled')
+
+    if args.no_backup:
+        set_backup_enabled(False)
 
     # 1 Initial Setup
     disable_unused_filesystems()
