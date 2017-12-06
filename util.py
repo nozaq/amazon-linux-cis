@@ -3,7 +3,11 @@ import os
 from subprocess import check_output, CalledProcessError
 
 __file_history__ = {}
+__backup_enabled__ = True
 
+def set_backup_enabled(flag):
+    global __backup_enabled__
+    __backup_enabled__ = flag
 
 def exec_shell(cmd):
     """Executes consecutive shell commands."""
@@ -18,6 +22,12 @@ def exec_shell(cmd):
 
 def ensure_backed_up(path):
     """Backs up a file at the specified path unless it is already backed up"""
+    global __file_history__
+    global __backup_enabled__
+
+    if not __backup_enabled__:
+        return
+
     if path not in __file_history__ and os.path.isfile(path):
         backup_path = '{}.bak'.format(path)
         logging.info('Backing up %s into %s...', path, backup_path)
