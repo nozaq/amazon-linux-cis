@@ -505,7 +505,11 @@ def configure_su():
 def main():
     parser = argparse.ArgumentParser(
         description='A script to harden Amazon Linux instance.')
-    parser.add_argument('--time', required=True, metavar='<time server>',
+
+    # The Amazon Time Sync Service is available through NTP
+    # at the 169.254.169.123 IP address for any instance running in a VPC. 
+    # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-time.html
+    parser.add_argument('--time', metavar='<time server>', default ='169.254.169.12',
                         help='Specify the upstream time server.')
     parser.add_argument('--chrony', action='store', type=bool, default=True,
                         help='Use chrony for time synchronization')
