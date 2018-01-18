@@ -278,12 +278,13 @@ def configure_tcp_wrapper(hosts):
     # 3.4.1 Ensure TCP Wrappers is installed
     Package('tcp_wrappers').install()
 
-    # 3.4.2 Ensure /etc/hosts.allow is configured
-    allowed_hosts = ','.join(hosts)
-    exec_shell('echo "ALL: {}" > /etc/hosts.allow'.format(allowed_hosts))
+    if hosts:
+        # 3.4.2 Ensure /etc/hosts.allow is configured
+        allowed_hosts = ','.join(hosts)
+        exec_shell('echo "ALL: {}" > /etc/hosts.allow'.format(allowed_hosts))
 
-    # 3.4.3 Ensure /etc/hosts.deny is configured
-    exec_shell('echo "ALL: ALL" > /etc/hosts.deny')
+        # 3.4.3 Ensure /etc/hosts.deny is configured
+        exec_shell('echo "ALL: ALL" > /etc/hosts.deny')
 
     # 3.4.4 Ensure permissions on /etc/hosts.allow are configured
     exec_shell([
@@ -507,7 +508,7 @@ def main():
         description='A script to harden Amazon Linux instance.')
 
     # The Amazon Time Sync Service is available through NTP
-    # at the 169.254.169.123 IP address for any instance running in a VPC. 
+    # at the 169.254.169.123 IP address for any instance running in a VPC.
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-time.html
     parser.add_argument('--time', metavar='<time server>', default ='169.254.169.12',
                         help='Specify the upstream time server.')
@@ -515,7 +516,7 @@ def main():
                         help='Use chrony for time synchronization')
     parser.add_argument('--no-backup', action='store_true',
                         help='Use chrony for time synchronization')
-    parser.add_argument('--clients', metavar='<allowed clients>',
+    parser.add_argument('--clients', nargs='+', metavar='<allowed clients>',
                         help='Specify a comma separated list of hostnames and host IP addresses.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Display details including debugging output etc.')
@@ -535,8 +536,9 @@ def main():
     else:
         logging.info(
             '[Config] ntp will be used for time synchronization')
-    logging.info('[Config] Allowed clients are set as %s',
-                 args.clients.split(','))
+    if args.clients:
+        logging.info('[Config] Allowed clients are set as %s',
+            args.clients)
 
     if args.no_backup:
         logging.info('[Config] Automatic config backup is disabled')
@@ -567,7 +569,7 @@ def main():
     configure_host_network_params()
     configure_network_params()
     configure_ipv6_params()
-    configure_tcp_wrapper(args.clients.split(','))
+    configure_tcp_wrapper(args.clients)
     disable_uncommon_protocols()
     configure_iptables()
 
