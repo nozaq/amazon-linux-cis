@@ -190,6 +190,10 @@ def configure_chrony(upstream):
         'OPTIONS': '"-u chrony"'
     }).write()
 
+    exec_shell([
+        'chkconfig chronyd on',
+    ])
+
 
 def remove_x11_packages():
     """2.2.2 Ensure X Window System is not installed"""
@@ -273,7 +277,7 @@ def configure_ipv6_params():
     }).write()
 
 
-def configure_tcp_wrapper(hosts):
+def configure_tcp_wrappers(hosts):
     """3.4 TCP Wrappers"""
     # 3.4.1 Ensure TCP Wrappers is installed
     Package('tcp_wrappers').install()
@@ -510,16 +514,20 @@ def main():
     # The Amazon Time Sync Service is available through NTP
     # at the 169.254.169.123 IP address for any instance running in a VPC.
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-time.html
-    parser.add_argument('--time', metavar='<time server>', default ='169.254.169.12',
+    parser.add_argument('--time', metavar='<time server>', default ='169.254.169.123',
                         help='Specify the upstream time server.')
     parser.add_argument('--chrony', action='store', type=bool, default=True,
                         help='Use chrony for time synchronization')
     parser.add_argument('--no-backup', action='store_true',
-                        help='Use chrony for time synchronization')
+                        help='Automatic config backup is disabled')
     parser.add_argument('--clients', nargs='+', metavar='<allowed clients>',
                         help='Specify a comma separated list of hostnames and host IP addresses.')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Display details including debugging output etc.')
+    parser.add_argument('--disable-tcp-wrappers', action='store_true',
+                        help='disable tcp-wrappers')
+    parser.add_argument('--disable-pam', action='store_true',
+                        help='disable pam')
 
     args = parser.parse_args()
 
@@ -542,8 +550,6 @@ def main():
 
     if args.no_backup:
         logging.info('[Config] Automatic config backup is disabled')
-
-    if args.no_backup:
         set_backup_enabled(False)
 
     # 1 Initial Setup
@@ -569,7 +575,8 @@ def main():
     configure_host_network_params()
     configure_network_params()
     configure_ipv6_params()
-    configure_tcp_wrapper(args.clients)
+    if not args.disable_tcp_wrappers:
+        configure_tcp_wrappers(args.clients)
     disable_uncommon_protocols()
     configure_iptables()
 
@@ -580,7 +587,8 @@ def main():
     # 5 Access, Authentication and Authorization
     configure_cron()
     configure_sshd()
-    configure_pam()
+    if not args.disable_pam:
+        configure_pam()
     configure_password_parmas()
     configure_umask()
     configure_su()
