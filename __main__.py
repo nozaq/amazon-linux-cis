@@ -190,6 +190,9 @@ def configure_chrony(upstream):
         'OPTIONS': '"-u chrony"'
     }).write()
 
+    exec_shell([
+        'chkconfig chronyd on',
+    ])
 
 def remove_x11_packages():
     """2.2.2 Ensure X Window System is not installed"""
@@ -510,7 +513,7 @@ def main():
     # The Amazon Time Sync Service is available through NTP
     # at the 169.254.169.123 IP address for any instance running in a VPC.
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-time.html
-    parser.add_argument('--time', metavar='<time server>', default ='169.254.169.12',
+    parser.add_argument('--time', metavar='<time server>', default ='169.254.169.123',
                         help='Specify the upstream time server.')
     parser.add_argument('--chrony', action='store', type=bool, default=True,
                         help='Use chrony for time synchronization')
