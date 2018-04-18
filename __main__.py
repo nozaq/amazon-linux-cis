@@ -528,6 +528,8 @@ def main():
                         help='disable tcp-wrappers')
     parser.add_argument('--disable-pam', action='store_true',
                         help='disable pam')
+    parser.add_argument('--disable-iptables', action='store_true',
+                        help='disable iptables')
 
     args = parser.parse_args()
 
@@ -578,7 +580,8 @@ def main():
     if not args.disable_tcp_wrappers:
         configure_tcp_wrappers(args.clients)
     disable_uncommon_protocols()
-    configure_iptables()
+    if not args.disable_iptables:
+        configure_iptables()
 
     # 4 Logging and Auditing
     configure_rsyslog()
