@@ -138,7 +138,7 @@ class PropertyFile:
 
         for key, value in params.items():
             if value is not None:
-                content += '{}{}{}\n'.format(key, self.sep, value)
+                content += '\n{}{}{}'.format(key, self.sep, value)
 
         ensure_backed_up(self.path)
         with open(self.path, 'w') as f:
