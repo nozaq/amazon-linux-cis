@@ -531,7 +531,7 @@ def main():
     parser.add_argument('--disable-iptables', action='store_true',
                         help='disable iptables')
     parser.add_argument('--disable-mount-options', action='store_true',
-+                        help='disable set mount options')
+                        help='disable set mount options')
 
     args = parser.parse_args()
 
