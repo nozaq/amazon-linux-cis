@@ -530,6 +530,8 @@ def main():
                         help='disable pam')
     parser.add_argument('--disable-iptables', action='store_true',
                         help='disable iptables')
+    parser.add_argument('--disable-mount-options', action='store_true',
++                        help='disable set mount options')
 
     args = parser.parse_args()
 
@@ -556,7 +558,8 @@ def main():
 
     # 1 Initial Setup
     disable_unused_filesystems()
-    set_mount_options()
+    if not args.disable_mount_options:
++        set_mount_options()
     ensure_sticky_bit()
     disable_automounting()
     enable_aide()
