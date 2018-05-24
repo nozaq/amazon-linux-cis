@@ -559,7 +559,7 @@ def main():
     # 1 Initial Setup
     disable_unused_filesystems()
     if not args.disable_mount_options:
-+        set_mount_options()
+        set_mount_options()
     ensure_sticky_bit()
     disable_automounting()
     enable_aide()
