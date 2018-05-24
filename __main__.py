@@ -57,7 +57,7 @@ def ensure_sticky_bit():
         return 1
 
 
-def disable_automounitng():
+def disable_automounting():
     """1.1.19 Disable Automounting"""
     Service('autofs').disable()
 
@@ -558,7 +558,7 @@ def main():
     disable_unused_filesystems()
     set_mount_options()
     ensure_sticky_bit()
-    disable_automounitng()
+    disable_automounting()
     enable_aide()
     secure_boot_settings()
     apply_process_hardenings()
