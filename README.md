@@ -13,3 +13,4 @@ $ python ./amazon-linux-cis
 
 ## Tested Environments
 - Amazon Linux 2017.09
+- Amazon Linux AMI 2018.03.0 (HVM)
