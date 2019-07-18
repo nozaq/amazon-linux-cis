@@ -33,5 +33,6 @@ python ./amazon-linux-cis --disable-mount-options
 ```
 
 ## Tested Environments
-- Amazon Linux - 2017.09
+- Amazon Linux 2017.09
+- Amazon Linux AMI 2018.03.0 (HVM)
 - Amazon Linux 2 - 2017.12
