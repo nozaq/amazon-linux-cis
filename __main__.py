@@ -57,7 +57,7 @@ def ensure_sticky_bit():
         return 1
 
 
-def disable_automounitng():
+def disable_automounting():
     """1.1.19 Disable Automounting"""
     Service('autofs').disable()
 
@@ -333,7 +333,7 @@ def configure_iptables():
         'iptables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT',
         'iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT',
         'iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT',
-        'service iptables save'
+        'iptables-save'
     ])
 
 
@@ -530,6 +530,8 @@ def main():
                         help='disable pam')
     parser.add_argument('--disable-iptables', action='store_true',
                         help='disable iptables')
+    parser.add_argument('--disable-mount-options', action='store_true',
+                        help='disable set mount options')
 
     args = parser.parse_args()
 
@@ -556,9 +558,10 @@ def main():
 
     # 1 Initial Setup
     disable_unused_filesystems()
-    set_mount_options()
+    if not args.disable_mount_options:
+        set_mount_options()
     ensure_sticky_bit()
-    disable_automounitng()
+    disable_automounting()
     enable_aide()
     secure_boot_settings()
     apply_process_hardenings()
