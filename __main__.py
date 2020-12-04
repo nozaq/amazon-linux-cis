@@ -32,7 +32,6 @@ def set_mount_options():
     options = {
         '/tmp': 'tmpfs /tmp tmpfs rw,nosuid,nodev,noexec,relatime 0 0',
         '/var/tmp': 'tmpfs /var/tmp tmpfs rw,nosuid,nodev,noexec,relatime 0 0',
-        '/home': '/dev/xvdf1 /home ext4 rw,nodev,relatime,data=ordered 0 0',
         '/dev/shm': 'tmpfs /dev/shm tmpfs rw,nosuid,nodev,noexec,relatime 0 0'
     }
 
@@ -82,7 +81,9 @@ def secure_boot_settings():
     if os.path.isfile('/boot/grub/menu.lst'):
         exec_shell([
             'chown root:root /boot/grub/menu.lst',
-            'chmod og-rwx /boot/grub/menu.lst'
+            'chmod og-rwx /boot/grub/menu.lst',
+            'chown root:root /boot/grub2/grub.cfg',
+            'chmod og-rwx /boot/grub2/grub.cfg',
         ])
 
     PropertyFile('/etc/sysconfig/init', '=').override({
@@ -268,7 +269,9 @@ def configure_ipv6_params():
         'net.ipv6.conf.all.accept_ra': '0',
         'net.ipv6.conf.default.accept_ra': '0',
         'net.ipv6.conf.all.accept_redirects': '0',
-        'net.ipv6.conf.default.accept_redirects': '0'
+        'net.ipv6.conf.default.accept_redirects': '0',
+        'net.ipv6.conf.all.accept_source_route': '0',
+        'net.ipv6.conf.default.accept_source_route': '0',
     }).write()
 
     # 3.3.3 Ensure IPv6 is disabled
@@ -334,6 +337,17 @@ def configure_iptables():
         'iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT',
         'iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j ACCEPT',
         'iptables-save'
+    ])
+
+    exec_shell([
+        'ip6tables -F',
+        'ip6tables -P INPUT DROP',
+        'ip6tables -P OUTPUT DROP',
+        'ip6tables -P FORWARD DROP',
+        'ip6tables -A INPUT -i lo -j ACCEPT',
+        'ip6tables -A OUTPUT -o lo -j ACCEPT',
+        'ip6tables -A INPUT -s ::1 -j DROP',
+        'ip6tables-save'
     ])
 
 
@@ -421,7 +435,8 @@ def configure_sshd():
         'ClientAliveCountMax': '0',
         'LoginGraceTime': '60',
         'AllowUsers': 'ec2-user',
-        'Banner': '/etc/issue.net'
+        'Banner': '/etc/issue.net',
+        'KexAlgorithms': 'curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchangesha256'
     }).write()
 
 
@@ -516,7 +531,7 @@ def main():
     # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/set-time.html
     parser.add_argument('--time', metavar='<time server>', default ='169.254.169.123',
                         help='Specify the upstream time server.')
-    parser.add_argument('--chrony', action='store', type=bool, default=True,
+    parser.add_argument('--chrony', action='store', type=bool,
                         help='Use chrony for time synchronization')
     parser.add_argument('--no-backup', action='store_true',
                         help='Automatic config backup is disabled')
