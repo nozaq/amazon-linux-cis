@@ -1,0 +1,18 @@
+{
+  "name": "@lifeomic/amazon-linux-cis",
+  "version": "1.0.0",
+  "description": "A collection scripts used for hardening Amazon Machine Images - Linux",
+  "author": "LifeOmic <development@lifeomic.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifeomic/amazon-linux-cis"
+  },
+  "homepage": "https://github.com/lifeomic/amazon-linux-cis/blob/master/README.md",
+  "private": true,
+  "scripts": {
+    "predeploy": "yarn",
+    "deploy": "yarn",
+    "plan": "yarn"
+  }
+}
