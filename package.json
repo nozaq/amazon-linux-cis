@@ -9,7 +9,6 @@
     "url": "https://github.com/lifeomic/amazon-linux-cis"
   },
   "homepage": "https://github.com/lifeomic/amazon-linux-cis/blob/master/README.md",
-  "private": true,
   "scripts": {
     "deploy": "yarn",
     "plan": "yarn"
