@@ -9,6 +9,13 @@ pipeline {
   }
 
   stages {
+    stage('init build') {
+      steps {
+        initBuild()
+        sh 'yarn install'
+      }
+    }
+    
     stage('publish prerelease') {
       when { not { branch 'master' } }
       steps {
