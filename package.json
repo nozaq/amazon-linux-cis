@@ -13,5 +13,8 @@
   "scripts": {
     "deploy": "yarn",
     "plan": "yarn"
+  },
+  "devDependencies": {
+    "@lifeomic/dev-tools": "^8.3.0"
   }
 }
