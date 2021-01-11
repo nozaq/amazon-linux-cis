@@ -1,6 +1,6 @@
 {
   "name": "@lifeomic/amazon-linux-cis",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A collection of scripts used for hardening Amazon Machine Images - Linux",
   "author": "LifeOmic <development@lifeomic.com>",
   "license": "MIT",
