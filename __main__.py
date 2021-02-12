@@ -78,10 +78,8 @@ def enable_aide():
 def secure_boot_settings():
     """1.4 Secure Boot Settings"""
 
-    if os.path.isfile('/boot/grub/menu.lst'):
+    if os.path.isfile('/boot/grub2/grub.cfg'):
         exec_shell([
-            'chown root:root /boot/grub/menu.lst',
-            'chmod og-rwx /boot/grub/menu.lst',
             'chown root:root /boot/grub2/grub.cfg',
             'chmod og-rwx /boot/grub2/grub.cfg',
         ])
@@ -371,13 +369,14 @@ def configure_rsyslog():
         'local2,local3.*': '-/var/log/localmessages',
         'local4,local5.*': '-/var/log/localmessages',
         'local6,local7.*': '-/var/log/localmessages ',
-        '$FileCreateMode': '0640'
+        '$FileCreateMode': '0640',
+        '*.*': '@@https://collectors.fed.sumologic.com/receiver/v1/http/ZaVnC4dhaV2pkFKHAFk8s50Ra8xfWwbFRUR0BByuGUNrjxGKkwr5Fn0eLbgu9wCO-JG1gADZjqq3cIj6Q2jxUcHjg5jVXIXP6ceZ86rghmWa33E_rSjRUQ=='
     }).write()
 
 
 def configure_log_file_permissions():
     """4.2.4 Ensure permissions on all logfiles are configured"""
-    exec_shell([r'find /var/log -type f -exec chmod g-wx,o-rwx {} +'])
+    exec_shell(['find -L /var/log -type f -exec chmod g-wx,o-rw {} +'])
 
 
 def configure_cron():
@@ -436,7 +435,7 @@ def configure_sshd():
         'LoginGraceTime': '60',
         'AllowUsers': 'ec2-user',
         'Banner': '/etc/issue.net',
-        'KeyAlgorithms': 'curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchangesha256'
+        'KexAlgorithms': 'curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256'
     }).write()
 
 
