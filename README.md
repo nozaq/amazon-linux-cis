@@ -20,8 +20,8 @@ Argument (default value) | What it does
 --clients *comma seperate list* | Specify a comma separated list of hostnames and host IP addresses
 -v --verbose | Enable verbose logging of utility
 --disable-tcp-wrappers | Disable installation of TCP Wrappers package
---disable-pam | Disable installation of TCP Wrappers package
---disable-iptables | Disable the hardening of the PAM module
+--disable-pam | Disable the hardening of the PAM module
+--disable-iptables | Disable the installation of IPtables
 --disable-mount-options | Disable replacing the default */etc/fstab* mounting config file
 
 
