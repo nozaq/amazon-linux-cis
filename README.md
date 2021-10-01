@@ -7,12 +7,12 @@ Bootstrap script for Amazon Linux to comply with [CIS Amazon Linux Benchmark v2.
 
 ## Usage
 ```
-$ git clone git@github.com:nozaq/amazon-linux-cis.git .
+$ git clone https://github.com/nozaq/amazon-linux-cis.git .
 $ python ./amazon-linux-cis
 ```
 
 ## Available Arguments
-Argument (default value) | What it does 
+Argument (default value) | What it does
 ------------ | -------------
 --time (169.254.169.123) | Specify the upstream time server
 --chrony *boolean* (true) | Use chrony for time synchronization
