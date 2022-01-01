@@ -1,3 +1,5 @@
+**This repositry is no longer maintained in favor of [CIS hardened AMIs](https://www.cisecurity.org/cis-hardened-images/amazon/).**
+
 # amazon-linux-cis
 
 [![CircleCI](https://circleci.com/gh/nozaq/amazon-linux-cis.svg?style=svg)](https://circleci.com/gh/nozaq/amazon-linux-cis)
